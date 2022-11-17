@@ -67,17 +67,17 @@ abstract contract ERC1155Soul {
         }
         uint256 batch = (id - _startTokenId()) / _batchSize();
         uint256 offset = ((id - _startTokenId()) % _batchSize()) * 20;
+        bytes memory data = SSTORE2Map.read(bytes32(batch), offset, offset + 20);
 
-        address owner = abi.decode(
-            SSTORE2Map.read(bytes32(batch), offset, offset + 20),
-            (address)
-        );
-
+        address owner;
+        assembly {
+            owner := mload(add(data,20))
+        } 
         if(account == owner) {
             return 1;
         } else {
             return 0;
-        }   
+        }
     }
 
     function balanceOfBatch(address[] calldata accounts, uint256[] calldata ids)
@@ -93,7 +93,7 @@ abstract contract ERC1155Soul {
         uint256[] memory batchBalances = new uint256[](accounts.length);
         unchecked {
             for (uint256 i = 0; i < accounts.length; ++i) {
-                batchBalances[i] = balanceOf(accounts[i], ids[i]);
+                batchBalances[i] = 0;//balanceOf(accounts[i], ids[i]);
             }   
         }
         return batchBalances;
@@ -112,14 +112,34 @@ abstract contract ERC1155Soul {
     function _mint(
         address[] memory tos
     ) internal virtual {
+        uint256 next = _nextTokenId();
         require(tos.length <= _batchSize());
+        bytes memory buffer;
+        assembly {
+            buffer := tos
+        }
+
+        require(next + (tos.length - 1) > next );//no overflow    
+        unchecked {
+            for (uint256 i = 0; i < tos.length; i++) {
+                address owner = tos[i];
+                bytes32 ownerByte = bytes32(bytes20(owner));
+                assembly {  
+                    mstore(add(add(buffer, mul(i, 20)),32), ownerByte)
+                } 
+                    
+                emit TransferSingle(msg.sender, address(0), owner, next+ i, 1);
+            }    
+        }
+        uint256 bufferLength = tos.length * 20;
+        assembly {  
+            mstore(buffer, bufferLength)
+        } 
+
         SSTORE2Map.write(
             bytes32(_batchIndex),
-            abi.encode(tos)
+            buffer
         );
-        for (uint256 i = 0; i < tos.length; i++) {
-            emit TransferSingle(msg.sender, address(0), tos[i], _nextTokenId() + 1, 1);
-        }
         _batchIndex++;
     }
 }
