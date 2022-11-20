@@ -1,13 +1,14 @@
-// SPDX-License-Identifier: AGPL-3.0-only
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 
 
-import "@0xsequence/sstore2/contracts/SSTORE2Map.sol";
+import "solmate/src/utils/SSTORE2.sol";
 
 
 abstract contract ERC1155Soul {
 
     uint256 private _batchIndex;
+    mapping(uint256 => address) private _batchDataStorage;
 
     event TransferSingle(
         address indexed operator,
@@ -20,15 +21,16 @@ abstract contract ERC1155Soul {
     error NotImplemented();
     error BalanceQueryForZeroAddress();
     error InputLengthMistmatch();
+    error ExceedBatchSize();
 
 
     function uri(uint256 id) public view virtual returns (string memory);
 
-    function _startTokenId() internal pure virtual returns (uint256) {
+    function _startTokenId() internal view virtual returns (uint256) {
         return 0;
     }
 
-    function _batchSize() internal pure virtual returns (uint256) {
+    function _batchSize() internal view virtual returns (uint256) {
         return 500;
     }
 
@@ -67,7 +69,10 @@ abstract contract ERC1155Soul {
         }
         uint256 batch = (id - _startTokenId()) / _batchSize();
         uint256 offset = ((id - _startTokenId()) % _batchSize()) * 20;
-        bytes memory data = SSTORE2Map.read(bytes32(batch), offset, offset + 20);
+        bytes memory data = SSTORE2.read(
+            _batchDataStorage[batch]
+            , offset, offset + 20
+        );
 
         address owner;
         assembly {
@@ -113,7 +118,10 @@ abstract contract ERC1155Soul {
         address[] memory tos
     ) internal virtual {
         uint256 next = _nextTokenId();
-        require(tos.length <= _batchSize());
+        if(tos.length > _batchSize()) {
+            revert ExceedBatchSize();
+        }
+
         bytes memory buffer;
         assembly {
             buffer := tos
@@ -123,12 +131,12 @@ abstract contract ERC1155Soul {
         unchecked {
             for (uint256 i = 0; i < tos.length; i++) {
                 address owner = tos[i];
-                bytes32 ownerByte = bytes32(bytes20(owner));
+                bytes32 ownerBytes = bytes32(bytes20(owner));
                 assembly {  
-                    mstore(add(add(buffer, mul(i, 20)),32), ownerByte)
+                    mstore(add(add(buffer, mul(i, 20)),32), ownerBytes)
                 } 
                     
-                emit TransferSingle(msg.sender, address(0), owner, next+ i, 1);
+                emit TransferSingle(msg.sender, address(0), owner, next + i, 1);
             }    
         }
         uint256 bufferLength = tos.length * 20;
@@ -136,8 +144,7 @@ abstract contract ERC1155Soul {
             mstore(buffer, bufferLength)
         } 
 
-        SSTORE2Map.write(
-            bytes32(_batchIndex),
+        _batchDataStorage[_batchIndex] = SSTORE2.write(
             buffer
         );
         _batchIndex++;

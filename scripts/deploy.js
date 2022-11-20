@@ -18,13 +18,12 @@ async function main() {
   const accounts = await ethers.getSigners();
   const deployer = accounts[0];
   const tos = Array(500 ).fill(deployer.address);
-  console.log(tos);
+  //console.log(tos);
 
   let tx = await erc1155soul.mint(tos);
   tx = await tx.wait();
-  console.log(tx.gasUsed.toString());
-
-  console.log(await erc1155soul.balanceOf(deployer.address,499));
+  console.log("total gas:", tx.gasUsed.toString());
+  console.log("per token gas:", tx.gasUsed.toString());
 
 }
 

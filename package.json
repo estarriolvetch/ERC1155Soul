@@ -17,11 +17,10 @@
     "typechain": "^8.1.0"
   },
   "name": "erc1155soul",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@0xsequence/sstore2": "https://github.com/0xsequence/sstore2",
     "solmate": "https://github.com/transmissions11/solmate"
   }
 }
