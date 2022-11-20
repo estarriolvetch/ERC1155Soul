@@ -1,8 +1,8 @@
 # ERC1155Soul
 
 [![Test](https://github.com/ctor-lab/ERC1155Soul/actions/workflows/node.js.yml/badge.svg)](https://github.com/ctor-lab/ERC1155Soul/actions/workflows/node.js.yml)
-
 [![Publish Package to npmjs](https://github.com/ctor-lab/ERC1155Soul/actions/workflows/deploy_npm.yml/badge.svg)](https://github.com/ctor-lab/ERC1155Soul/actions/workflows/deploy_npm.yml)
+[![npm version](https://badge.fury.io/js/erc1155soul.svg)](https://www.npmjs.com/package/erc1155soul)
 
 An ERC1155 soulbound token (SBT) impelementation with ultralow gas usage.
 
