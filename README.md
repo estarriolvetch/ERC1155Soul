@@ -1,5 +1,9 @@
 # ERC1155Soul
 
+[![Test](https://github.com/ctor-lab/ERC1155Soul/actions/workflows/node.js.yml/badge.svg)](https://github.com/ctor-lab/ERC1155Soul/actions/workflows/node.js.yml)
+
+[![Publish Package to npmjs](https://github.com/ctor-lab/ERC1155Soul/actions/workflows/deploy_npm.yml/badge.svg)](https://github.com/ctor-lab/ERC1155Soul/actions/workflows/deploy_npm.yml)
+
 An ERC1155 soulbound token (SBT) impelementation with ultralow gas usage.
 
 While minting 500 tokens, each SBT costs about ~7500 gas only.
