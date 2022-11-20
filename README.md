@@ -6,7 +6,7 @@
 
 An ERC1155 soulbound token (SBT) impelementation with ultralow gas usage.
 
-While minting 500 tokens, each SBT costs about ~7500 gas only.
+While minting 500 tokens, each SBT costs about ~7500 gas only. This is rouhly 4x ~ 5x lower than using the conventional ERC1155 implementations.
 
 In addition, each SBT has its unique token ID. Namely, you will not see the SBTs overlapped with each other on the Opensea, and it is possible to give each SBT its unique metadata.
 
