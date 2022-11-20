@@ -23,7 +23,7 @@ async function main() {
   let tx = await erc1155soul.mint(tos);
   tx = await tx.wait();
   console.log("total gas:", tx.gasUsed.toString());
-  console.log("per token gas:", tx.gasUsed.toString());
+  console.log("per token gas:", tx.gasUsed.div(tos.length).toString());
 
 }
 

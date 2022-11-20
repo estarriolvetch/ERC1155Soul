@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.8.0;
+// Creator: Ctor Lab (https://ctor.xyz)
 
+pragma solidity >=0.8.0;
 
 import "solmate/src/utils/SSTORE2.sol";
 
