@@ -12,7 +12,7 @@ In addition, each SBT has its unique token ID. Namely, you will not see the SBTs
 
 ## How it works
 
-`ERC1155Soul` uses the two facts to achieve the ultralow gas usage:
+`ERC1155Soul` uses two facts to achieve the ultralow gas usage:
 
 * Storing the data within the smart contract is much cheaper (uses less gas) than in the storage.
 * A smart contract can create another smart contract.
