@@ -19,6 +19,11 @@ describe("ERC1155Soul", function () {
         for (const j of Array(accounts.length).keys()) {
             const expectedBalance = i==j ? 1 :0;
             expect(await ERC1155Soul.balanceOf(toMint[i], j)).to.equal(expectedBalance);
+            let batchBalance = await ERC1155Soul.balanceOfBatch(toMint, Array(accounts.length).fill(j));
+            for (const k of Array(accounts.length).keys()) {
+                const expectedBalance2 = k==j ? 1 :0;
+                expect(batchBalance[k]).to.equal(expectedBalance2);
+            }
         }
     }
 
@@ -62,6 +67,12 @@ describe("ERC1155Soul", function () {
         for (const j of Array(accounts.length).keys()) {
             const expectedBalance = i==j ? 1 :0;
             expect(await ERC1155Soul.balanceOf(toMint[i], j + startTokenId)).to.equal(expectedBalance);
+        
+            let batchBalance = await ERC1155Soul.balanceOfBatch(toMint, Array(accounts.length).fill(j + startTokenId));
+            for (const k of Array(accounts.length).keys()) {
+                const expectedBalance2 = k==j ? 1 :0;
+                expect(batchBalance[k]).to.equal(expectedBalance2);
+            }
         }
     }
 
