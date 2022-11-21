@@ -99,7 +99,7 @@ abstract contract ERC1155Soul {
         uint256[] memory batchBalances = new uint256[](accounts.length);
         unchecked {
             for (uint256 i = 0; i < accounts.length; ++i) {
-                batchBalances[i] = 0;//balanceOf(accounts[i], ids[i]);
+                batchBalances[i] = balanceOf(accounts[i], ids[i]);
             }   
         }
         return batchBalances;
