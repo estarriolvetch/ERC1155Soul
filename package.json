@@ -17,7 +17,7 @@
     "typechain": "^8.1.0"
   },
   "name": "erc1155soul",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {

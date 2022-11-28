@@ -3,6 +3,8 @@ const { ethers } = require("hardhat");
 
 describe("ERC1155Soul", function () {
 
+    
+
   it("ERC1155Soul", async function () {
     let ERC1155Soul = await ethers.getContractFactory("ERC1155SoulMock");
     ERC1155Soul = await ERC1155Soul.deploy();
@@ -93,4 +95,51 @@ describe("ERC1155Soul", function () {
         }
     }
   });
+
+  it("Querying non-existing token (batch doesn't exist.)", async function () {
+    let ERC1155Soul = await ethers.getContractFactory("ERC1155SoulMock");
+    ERC1155Soul = await ERC1155Soul.deploy();
+    await ERC1155Soul.deployed();
+
+    let accounts = await ethers.getSigners();
+
+    expect(await ERC1155Soul.balanceOf(accounts[0].address, 0)).to.equal(0);
+
+    });
+
+    it("Querying non-existing token (same batch but outside the storage)", async function () {
+        let ERC1155Soul = await ethers.getContractFactory("ERC1155SoulMock");
+        ERC1155Soul = await ERC1155Soul.deploy();
+        await ERC1155Soul.deployed();
+
+        let accounts = await ethers.getSigners();
+        const toMint = accounts.map(x => x.address);
+
+        await ERC1155Soul.mint([accounts[0].address]);
+
+        // Sanity check make sure the token is minted.
+        expect(await ERC1155Soul.balanceOf(accounts[0].address, 0)).to.equal(1);
+
+        expect(await ERC1155Soul.balanceOf(accounts[0].address, 1)).to.equal(0);
+    });
+
+    it("Querying non-existing token (smaller than the start token id)", async function () {
+        const startTokenId = 510;
+
+        let ERC1155Soul = await ethers.getContractFactory("ERC1155SoulMockStartTokenId");
+        ERC1155Soul = await ERC1155Soul.deploy(startTokenId);
+        await ERC1155Soul.deployed();;
+
+        let accounts = await ethers.getSigners();
+        const toMint = accounts.map(x => x.address);
+
+        await ERC1155Soul.mint([accounts[0].address]);
+
+        // Sanity check make sure the token is minted.
+        expect(await ERC1155Soul.balanceOf(accounts[0].address, 510)).to.equal(1);
+
+        expect(await ERC1155Soul.balanceOf(accounts[0].address, 509)).to.equal(0);
+        expect(await ERC1155Soul.balanceOf(accounts[0].address, 0)).to.equal(0);
+    });
+
 });
