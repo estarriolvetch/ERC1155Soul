@@ -9,7 +9,8 @@ const hre = require("hardhat");
 
 async function main() {
 
-  const ERC1155Soul = await hre.ethers.getContractFactory("ERC1155SoulMock");
+  //const ERC1155Soul = await hre.ethers.getContractFactory("ERC1155SoulMock");
+  const ERC1155Soul = await hre.ethers.getContractFactory("ERC1155SoulContinuousMock");
   const erc1155soul = await ERC1155Soul.deploy();
 
   await erc1155soul.deployed();
