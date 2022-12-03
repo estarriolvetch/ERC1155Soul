@@ -1,7 +1,7 @@
 const { expect, assert } = require("chai");
 const { ethers } = require("hardhat");
 
-describe.only("ERC1155SoulContinuous", function () {
+describe("ERC1155SoulContinuous", function () {
 
   it("ERC1155SoulContinuous", async function () {
     let ERC1155Soul = await ethers.getContractFactory("ERC1155SoulContinuousMock");
