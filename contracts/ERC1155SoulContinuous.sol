@@ -85,6 +85,10 @@ abstract contract ERC1155SoulContinuous {
             return 0;
         }
 
+        if(!_batchHead.get(_startTokenId())) {
+            return 0;
+        }
+        
         uint256 batchHeadId = _batchHead.scanForward(id);
         uint256 start = (id - batchHeadId) * ADDRESS_SIZE;
         uint256 end = start + ADDRESS_SIZE;
