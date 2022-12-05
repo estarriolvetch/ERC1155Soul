@@ -27,6 +27,7 @@ abstract contract ERC1155SoulContinuous {
     error BalanceQueryForZeroAddress();
     error InputLengthMistmatch();
     error ExceedBatchSize();
+    error MintZeroAmount();
 
 
     function uri(uint256 id) public view virtual returns (string memory);
@@ -150,6 +151,10 @@ abstract contract ERC1155SoulContinuous {
     function _mint(
         address[] memory tos
     ) internal virtual {
+        if(tos.length == 0) {
+            revert MintZeroAmount();
+        }
+        
         uint256 next = _nextTokenId();
         uint256 numToMint = tos.length;
 
