@@ -10,6 +10,8 @@ While minting 500 tokens, each SBT costs about ~7500 gas only. This is rouhly 4x
 
 In addition, each SBT has its unique token ID. Namely, you will not see the SBTs overlapped with each other on the Opensea, and it is possible to give each SBT its unique metadata.
 
+There are two varialnts, `ERC1155Soul` and `ERC1155SoulContinuous`. The token IDs of `ERC1155SoulContinuous` is always continuous. However, `ERC1155Soul` uses less gas. See [benchmark](#benchmark) for a more detailed comparision.
+
 ## How it works
 
 `ERC1155Soul` uses two facts to achieve the ultralow gas usage:
