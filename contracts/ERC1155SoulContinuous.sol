@@ -12,7 +12,7 @@ import "solidity-bits/contracts/BitMaps.sol";
  * @notice ERC1155Soul is an ERC1155 soulbound token implementaion.
  *         It is designed to be extremely gas efficent when minting to multiple addresses in a single transaction.
  *         
- *         Each token ID of this implementation are unique, and the IDs are consecutive.
+ *         Each token ID of this implementation is unique, and the IDs are consecutive.
  *         
  *         If having continuous token IDs between minting batches is not required, 
  *         one may consider using ERC1155Soul to save more gas.
