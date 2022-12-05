@@ -9,22 +9,49 @@ const hre = require("hardhat");
 
 async function main() {
 
-  //const ERC1155Soul = await hre.ethers.getContractFactory("ERC1155SoulMock");
-  const ERC1155Soul = await hre.ethers.getContractFactory("ERC1155SoulContinuousMock");
-  const erc1155soul = await ERC1155Soul.deploy();
+  const numToMint = [1,2,4,8,16,32,64,128,256,500];
 
-  await erc1155soul.deployed();
+  console.log("### ERC1155Soul");
+  console.log("|# of token |total gas|gas per token|");
+  console.log("|---|---|---|");
+  for (const i of numToMint) {
+    const ERC1155Soul = await hre.ethers.getContractFactory("ERC1155SoulMock");
+    const erc1155soul = await ERC1155Soul.deploy();
+
+    await erc1155soul.deployed();
 
 
-  const accounts = await ethers.getSigners();
-  const deployer = accounts[0];
-  const tos = Array(500 ).fill(deployer.address);
-  //console.log(tos);
+    const accounts = await ethers.getSigners();
+    const deployer = accounts[0];
+    const tos = Array(i ).fill(deployer.address);
+    //console.log(tos);
 
-  let tx = await erc1155soul.mint(tos);
-  tx = await tx.wait();
-  console.log("total gas:", tx.gasUsed.toString());
-  console.log("per token gas:", tx.gasUsed.div(tos.length).toString());
+    let tx = await erc1155soul.mint(tos);
+    tx = await tx.wait();
+    console.log("|",i.toString(), "|",tx.gasUsed.toString(), "|",tx.gasUsed.div(tos.length).toString(),"|")
+  }
+
+  console.log("### ERC1155SoulContinuous");
+  console.log("|# of token  |total gas|gas per token|");
+  console.log("|---|---|---|");
+
+  for (const i of numToMint) {
+    const ERC1155Soul = await hre.ethers.getContractFactory("ERC1155SoulContinuousMock");
+    const erc1155soul = await ERC1155Soul.deploy();
+
+    await erc1155soul.deployed();
+
+
+    const accounts = await ethers.getSigners();
+    const deployer = accounts[0];
+    const tos = Array(i ).fill(deployer.address);
+    //console.log(tos);
+
+    let tx = await erc1155soul.mint(tos);
+    tx = await tx.wait();
+    console.log("|",i.toString(), "|",tx.gasUsed.toString(), "|",tx.gasUsed.div(tos.length).toString(),"|")
+  }
+  
 
 }
 
