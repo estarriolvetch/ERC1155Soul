@@ -21,6 +21,8 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "solady": "^0.0.59",
+    "solidity-bits": "^0.4.0",
     "solmate": "https://github.com/transmissions11/solmate"
   }
 }

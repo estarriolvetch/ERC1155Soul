@@ -2,19 +2,6 @@
 # yarn lockfile v1
 
 
-"@0xsequence/create3@https://github.com/0xsequence/create3.git":
-  version "3.0.0"
-  resolved "https://github.com/0xsequence/create3.git#acc4703a21ec1d71dc2a99db088c4b1f467530fd"
-  dependencies:
-    csv-writer "^1.6.0"
-
-"@0xsequence/sstore2@https://github.com/0xsequence/sstore2":
-  version "1.1.0"
-  resolved "https://github.com/0xsequence/sstore2#0a28fe61b6e81de9a05b462a24b9f4ba8c70d5b7"
-  dependencies:
-    "@0xsequence/create3" "https://github.com/0xsequence/create3.git"
-    csv-writer "^1.6.0"
-
 "@ethersproject/abi@5.7.0", "@ethersproject/abi@^5.0.0-beta.146", "@ethersproject/abi@^5.0.9", "@ethersproject/abi@^5.1.2", "@ethersproject/abi@^5.4.7", "@ethersproject/abi@^5.7.0":
   version "5.7.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/abi/-/abi-5.7.0.tgz#b3f3e045bbbeed1af3947335c247ad625a44e449"
@@ -1588,11 +1575,6 @@ create-hmac@^1.1.4, create-hmac@^1.1.7:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/crypt/-/crypt-0.0.2.tgz#88d7ff7ec0dfb86f713dc87bbb42d044d3e6c41b"
   integrity sha512-mCxBlsHFYh9C+HVpiEacem8FEBnMXgU9gy4zmNC+SXAZNB/1idgp/aulFJ4FgCi7GPEVbfyng092GqL2k2rmow==
-
-csv-writer@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/csv-writer/-/csv-writer-1.6.0.tgz#d0cea44b6b4d7d3baa2ecc6f3f7209233514bcf9"
-  integrity sha512-NOx7YDFWEsM/fTRAJjRpPp8t+MKRVvniAg9wQlUKx20MFrPs73WLJhFf5iteqrxNYnsy924K3Iroh3yNHeYd2g==
 
 dashdash@^1.12.0:
   version "1.14.1"
@@ -3969,10 +3951,10 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
-solady@^0.0.54:
-  version "0.0.54"
-  resolved "https://registry.yarnpkg.com/solady/-/solady-0.0.54.tgz#158a811c552a89d6aa7b3d69dc4ae2ec624d3022"
-  integrity sha512-/cFG7SZFUt1wH8YFzC5T6CWYC0UJCPcjZptyIUQ/vPGDkGzcBvYChdb7paQHKAculXDKTkjEucUwNP153FX+Qg==
+solady@^0.0.59:
+  version "0.0.59"
+  resolved "https://registry.yarnpkg.com/solady/-/solady-0.0.59.tgz#1160f5e022ef2d2322e942d4d83ae55498d550e2"
+  integrity sha512-KnTHVIt2jmwqh9WWLW9iNL26kw0SQLA3EhJrt1/zVzGzSdUwarXUYIf/Nhok1OoMAjIcVIHLVUnQ2Dp1fVOYFw==
 
 solc@0.7.3:
   version "0.7.3"
@@ -3988,6 +3970,11 @@ solc@0.7.3:
     require-from-string "^2.0.0"
     semver "^5.5.0"
     tmp "0.0.33"
+
+solidity-bits@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/solidity-bits/-/solidity-bits-0.4.0.tgz#164ef2184d446b37fe1e08e63c55ae200b36697a"
+  integrity sha512-bAU3OwfZ3DrZz0LqxyCjaxXQL5fcbUXygaz7Wjd+4Th5zUbkw6h1SWBdi2E4yGOv1VSGyvcmHI8gAdgLDCXaDQ==
 
 solidity-coverage@^0.8.0:
   version "0.8.2"

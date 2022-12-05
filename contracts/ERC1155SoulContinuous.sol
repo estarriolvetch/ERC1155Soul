@@ -4,12 +4,15 @@
 pragma solidity >=0.8.0;
 
 import "solmate/src/utils/SSTORE2.sol";
+import "solidity-bits/contracts/BitMaps.sol";
 
 
-abstract contract ERC1155Soul {
+abstract contract ERC1155SoulContinuous {
+    using BitMaps for BitMaps.BitMap;
     uint256 private constant ADDRESS_SIZE = 20;
 
-    uint256 private _batchIndex;
+    uint256 private __totalMinted;
+    BitMaps.BitMap private _batchHead;
     mapping(uint256 => address) private _batchDataStorage;
 
     event TransferSingle(
@@ -38,7 +41,11 @@ abstract contract ERC1155Soul {
     }
 
     function _nextTokenId() internal view virtual returns (uint256) {
-        return _startTokenId() + _batchIndex * _batchSize();
+        return _startTokenId() + __totalMinted;
+    }
+
+    function _totalMinted() internal view virtual returns (uint256) {
+        return __totalMinted;
     }
 
     function setApprovalForAll(address operator, bool approved) public virtual {
@@ -65,6 +72,10 @@ abstract contract ERC1155Soul {
         revert NotImplemented();
     }
 
+    function batchHead(uint256 id) public view virtual returns (uint256) {
+        return _batchHead.scanForward(id);
+    }
+
 
     function balanceOf(address account, uint256 id) public view virtual returns (uint256) {
         if(account == address(0)) {
@@ -75,11 +86,14 @@ abstract contract ERC1155Soul {
             return 0;
         }
 
-        uint256 batch = (id - _startTokenId()) / _batchSize();
-        uint256 start = ((id - _startTokenId()) % _batchSize()) * ADDRESS_SIZE;
+        if(!_batchHead.get(_startTokenId())) {
+            return 0;
+        }
+        
+        uint256 batchHeadId = _batchHead.scanForward(id);
+        uint256 start = (id - batchHeadId) * ADDRESS_SIZE;
         uint256 end = start + ADDRESS_SIZE;
-
-        address dataStorage = _batchDataStorage[batch];
+        address dataStorage = _batchDataStorage[batchHeadId];
 
         if(dataStorage == address(0)) {
             return 0;
@@ -140,8 +154,10 @@ abstract contract ERC1155Soul {
         if(tos.length == 0) {
             revert MintZeroAmount();
         }
-
+        
         uint256 next = _nextTokenId();
+        uint256 numToMint = tos.length;
+
         if(tos.length > _batchSize()) {
             revert ExceedBatchSize();
         }
@@ -152,8 +168,8 @@ abstract contract ERC1155Soul {
         }
 
         unchecked {
-            require(next + tos.length > next); //no overflow  
-            for (uint256 i = 0; i < tos.length; i++) {
+            require(next + numToMint > next); //no overflow  
+            for (uint256 i = 0; i < numToMint; i++) {
                 address to = tos[i];
 
                 // remove the zeros between addresses in the array, so we won't wasting gas on storing the zeros.
@@ -165,15 +181,18 @@ abstract contract ERC1155Soul {
                 emit TransferSingle(msg.sender, address(0), to, next + i, 1);
             }    
         }
-        uint256 bufferLength = tos.length * ADDRESS_SIZE;
+        
+        uint256 bufferLength = numToMint * ADDRESS_SIZE;
         assembly {  
             // fill in the length of the buffer size.
             mstore(buffer, bufferLength)
         } 
 
-        _batchDataStorage[_batchIndex] = SSTORE2.write(
+        _batchHead.set(next);
+
+        _batchDataStorage[next] = SSTORE2.write(
             buffer
         );
-        _batchIndex++;
+        __totalMinted += numToMint;
     }
 }
