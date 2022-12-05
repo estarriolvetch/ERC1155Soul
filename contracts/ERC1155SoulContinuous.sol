@@ -6,7 +6,18 @@ pragma solidity >=0.8.0;
 import "solmate/src/utils/SSTORE2.sol";
 import "solidity-bits/contracts/BitMaps.sol";
 
-
+/**
+ * @title ERC1155SoulContinuous
+ * 
+ * @notice ERC1155Soul is an ERC1155 soulbound token implementaion.
+ *         It is designed to be extremely gas efficent when minting to multiple addresses in a single transaction.
+ *         
+ *         Each token ID of this implementation are unique, and the IDs are consecutive.
+ *         
+ *         If having continuous token IDs between minting batches is not required, 
+ *         one may consider using ERC1155Soul to save more gas.
+ *
+ */
 abstract contract ERC1155SoulContinuous {
     using BitMaps for BitMaps.BitMap;
     uint256 private constant ADDRESS_SIZE = 20;
@@ -82,6 +93,10 @@ abstract contract ERC1155SoulContinuous {
             revert BalanceQueryForZeroAddress();
         }
 
+        if(id >= _nextTokenId()) {
+            return 0;
+        }
+
         if(id < _startTokenId()) {
             return 0;
         }
@@ -95,13 +110,6 @@ abstract contract ERC1155SoulContinuous {
         uint256 end = start + ADDRESS_SIZE;
         address dataStorage = _batchDataStorage[batchHeadId];
 
-        if(dataStorage == address(0)) {
-            return 0;
-        }
-
-        if(dataStorage.code.length < end + SSTORE2.DATA_OFFSET) {
-            return 0;
-        }
 
         bytes memory data = SSTORE2.read(
             dataStorage
@@ -147,14 +155,15 @@ abstract contract ERC1155SoulContinuous {
             interfaceId == 0x0e89341c; // ERC165 Interface ID for ERC1155MetadataURI
     }
 
-
+    /// @dev Mint tokens to multiple accounts.
+    /// @param tos Accounts to receive the tokens.
     function _mint(
         address[] memory tos
     ) internal virtual {
         if(tos.length == 0) {
             revert MintZeroAmount();
         }
-        
+
         uint256 next = _nextTokenId();
         uint256 numToMint = tos.length;
 

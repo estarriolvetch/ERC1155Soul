@@ -5,7 +5,19 @@ pragma solidity >=0.8.0;
 
 import "solmate/src/utils/SSTORE2.sol";
 
-
+/**
+ * @title ERC1155Soul
+ * 
+ * @notice ERC1155Soul is an ERC1155 soulbound token implementaion.
+ *         It is designed to be extremely gas efficent when minting to multiple addresses in a single transaction.
+ *         
+ *         Each token ID of this implementation are unique, 
+           and the IDs minted at the same batch are consecutive.
+ *         The first ID in a batch minting is _startTokenId() + N_batch * _batchSize() 
+ *         
+ *         If having continuous token IDs between batches is desired, 
+ *         one may consider using ERC1155SoulContinuous.
+ */
 abstract contract ERC1155Soul {
     uint256 private constant ADDRESS_SIZE = 20;
 
@@ -134,6 +146,8 @@ abstract contract ERC1155Soul {
     }
 
 
+    /// @dev Mint tokens to multiple accounts.
+    /// @param tos Accounts to receive the tokens.
     function _mint(
         address[] memory tos
     ) internal virtual {
