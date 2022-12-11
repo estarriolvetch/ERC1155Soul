@@ -3951,10 +3951,10 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
-solady@^0.0.59:
-  version "0.0.59"
-  resolved "https://registry.yarnpkg.com/solady/-/solady-0.0.59.tgz#1160f5e022ef2d2322e942d4d83ae55498d550e2"
-  integrity sha512-KnTHVIt2jmwqh9WWLW9iNL26kw0SQLA3EhJrt1/zVzGzSdUwarXUYIf/Nhok1OoMAjIcVIHLVUnQ2Dp1fVOYFw==
+solady@^0.0.60:
+  version "0.0.60"
+  resolved "https://registry.yarnpkg.com/solady/-/solady-0.0.60.tgz#65e2f300d3c618e9564cb54dbcfb4ead31a4cd1e"
+  integrity sha512-5VuwlhX/DRxlst533nKKDgrHR+KU9KmzMbCz9ciArNmC6z7OSONl+czQYbiBoMcyw8MwT+az/I5WZdi4Ztv2hw==
 
 solc@0.7.3:
   version "0.7.3"

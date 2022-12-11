@@ -3,7 +3,9 @@
 
 pragma solidity >=0.8.0;
 
-import "solmate/src/utils/SSTORE2.sol";
+import "solady/src/utils/SSTORE2.sol";
+
+import "solady/src/utils/LibRLP.sol";
 
 /**
  * @title ERC1155Soul
@@ -22,7 +24,6 @@ abstract contract ERC1155Soul {
     uint256 private constant ADDRESS_SIZE = 20;
 
     uint256 private _batchIndex;
-    mapping(uint256 => address) private _batchDataStorage;
 
     event TransferSingle(
         address indexed operator,
@@ -91,7 +92,7 @@ abstract contract ERC1155Soul {
         uint256 start = ((id - _startTokenId()) % _batchSize()) * ADDRESS_SIZE;
         uint256 end = start + ADDRESS_SIZE;
 
-        address dataStorage = _batchDataStorage[batch];
+        address dataStorage = LibRLP.computeAddress(address(this), batch + 1);
 
         if(dataStorage == address(0)) {
             return 0;
@@ -185,9 +186,10 @@ abstract contract ERC1155Soul {
             mstore(buffer, bufferLength)
         } 
 
-        _batchDataStorage[_batchIndex] = SSTORE2.write(
+        SSTORE2.write(
             buffer
         );
+
         _batchIndex++;
     }
 }
