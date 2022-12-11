@@ -5,6 +5,7 @@ pragma solidity >=0.8.0;
 
 import "solmate/src/utils/SSTORE2.sol";
 import "solidity-bits/contracts/BitMaps.sol";
+import "./IIsOwnerOf.sol";
 
 /**
  * @title ERC1155SoulContinuous
@@ -18,7 +19,7 @@ import "solidity-bits/contracts/BitMaps.sol";
  *         one may consider using ERC1155Soul to save more gas.
  *
  */
-abstract contract ERC1155SoulContinuous {
+abstract contract ERC1155SoulContinuous is IIsOwnerOf {
     using BitMaps for BitMaps.BitMap;
     uint256 private constant ADDRESS_SIZE = 20;
 
@@ -87,22 +88,18 @@ abstract contract ERC1155SoulContinuous {
         return _batchHead.scanForward(id);
     }
 
-
-    function balanceOf(address account, uint256 id) public view virtual returns (uint256) {
-        if(account == address(0)) {
-            revert BalanceQueryForZeroAddress();
-        }
+    function isOwnerOf(address account, uint256 id) public view returns(bool) {
 
         if(id >= _nextTokenId()) {
-            return 0;
+            return false;
         }
 
         if(id < _startTokenId()) {
-            return 0;
+            return false;
         }
 
         if(!_batchHead.get(_startTokenId())) {
-            return 0;
+            return false;
         }
         
         uint256 batchHeadId = _batchHead.scanForward(id);
@@ -120,7 +117,17 @@ abstract contract ERC1155SoulContinuous {
         assembly {
             owner := mload(add(data, ADDRESS_SIZE))
         } 
-        if(account == owner) {
+
+        return account == owner;
+
+    }
+
+    function balanceOf(address account, uint256 id) public view virtual returns (uint256) {
+        if(account == address(0)) {
+            revert BalanceQueryForZeroAddress();
+        }
+
+        if(isOwnerOf(account, id)) {
             return 1;
         } else {
             return 0;
@@ -152,7 +159,8 @@ abstract contract ERC1155SoulContinuous {
         return
             interfaceId == 0x01ffc9a7 || // ERC165 Interface ID for ERC165
             interfaceId == 0xd9b67a26 || // ERC165 Interface ID for ERC1155
-            interfaceId == 0x0e89341c; // ERC165 Interface ID for ERC1155MetadataURI
+            interfaceId == 0x0e89341c || // ERC165 Interface ID for ERC1155MetadataURI
+            interfaceId == type(IIsOwnerOf).interfaceId;
     }
 
     /// @dev Mint tokens to multiple accounts.
