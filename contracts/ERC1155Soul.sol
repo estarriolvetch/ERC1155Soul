@@ -4,6 +4,7 @@
 pragma solidity >=0.8.0;
 
 import "solmate/src/utils/SSTORE2.sol";
+import "./IIsOwnerOf.sol";
 
 /**
  * @title ERC1155Soul
@@ -18,7 +19,7 @@ import "solmate/src/utils/SSTORE2.sol";
  *         If having continuous token IDs between batches is desired, 
  *         one may consider using ERC1155SoulContinuous.
  */
-abstract contract ERC1155Soul {
+abstract contract ERC1155Soul is IIsOwnerOf {
     uint256 private constant ADDRESS_SIZE = 20;
 
     uint256 private _batchIndex;
@@ -77,14 +78,9 @@ abstract contract ERC1155Soul {
         revert NotImplemented();
     }
 
-
-    function balanceOf(address account, uint256 id) public view virtual returns (uint256) {
-        if(account == address(0)) {
-            revert BalanceQueryForZeroAddress();
-        }
-
+    function isOwnerOf(address account, uint256 id) public view returns(bool) {
         if(id < _startTokenId()) {
-            return 0;
+            return false;
         }
 
         uint256 batch = (id - _startTokenId()) / _batchSize();
@@ -94,11 +90,11 @@ abstract contract ERC1155Soul {
         address dataStorage = _batchDataStorage[batch];
 
         if(dataStorage == address(0)) {
-            return 0;
+            return false;
         }
 
         if(dataStorage.code.length < end + SSTORE2.DATA_OFFSET) {
-            return 0;
+            return false;
         }
 
         bytes memory data = SSTORE2.read(
@@ -110,7 +106,17 @@ abstract contract ERC1155Soul {
         assembly {
             owner := mload(add(data, ADDRESS_SIZE))
         } 
-        if(account == owner) {
+
+        return account == owner;
+
+    }
+
+    function balanceOf(address account, uint256 id) public view virtual returns (uint256) {
+        if(account == address(0)) {
+            revert BalanceQueryForZeroAddress();
+        }
+        
+        if(isOwnerOf(account, id)) {
             return 1;
         } else {
             return 0;
@@ -142,7 +148,8 @@ abstract contract ERC1155Soul {
         return
             interfaceId == 0x01ffc9a7 || // ERC165 Interface ID for ERC165
             interfaceId == 0xd9b67a26 || // ERC165 Interface ID for ERC1155
-            interfaceId == 0x0e89341c; // ERC165 Interface ID for ERC1155MetadataURI
+            interfaceId == 0x0e89341c || // ERC165 Interface ID for ERC1155MetadataURI
+            interfaceId == type(IIsOwnerOf).interfaceId;
     }
 
 
