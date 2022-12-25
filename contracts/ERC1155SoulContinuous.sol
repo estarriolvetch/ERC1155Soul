@@ -3,7 +3,7 @@
 
 pragma solidity >=0.8.0;
 
-import "solmate/src/utils/SSTORE2.sol";
+import "solady/src/utils/SSTORE2.sol";
 import "solidity-bits/contracts/BitMaps.sol";
 import "./IIsOwnerOf.sol";
 
